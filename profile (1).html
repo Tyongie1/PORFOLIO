@@ -1,0 +1,196 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            padding: 10px;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            text-align: center;
+        }
+        .navbar a {
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .navbar a:hover {
+            background-color: #555;
+        }
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .profile-container {
+            text-align: center;
+            width: 200px;
+            margin-right: 30px;
+            padding-bottom: 20px; /* Added to ensure space for info-box */
+        }
+        .profile-image {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 auto;
+        }
+        .profile-name {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .info-box {
+            margin-top: 15px; /* Increased for more spacing */
+            padding: 8px 10px;
+            background-color: #f8f8f8;
+            border: 2px solid #4a4a4a;
+            border-radius: 5px;
+            width: 280px;
+            font-size: 13px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            text-align: center;
+            color: #333;
+            margin-left: -30px; /* Aligns under TIONGSON */
+            margin-right: auto;
+            position: relative; /* Ensure visibility */
+            z-index: 1; /* Prevent covering by other elements */
+        }
+        .profile-content {
+            flex: 1;
+            text-align: center;
+        }
+        .profile-content h1 {
+            margin-top: 0;
+            font-size: 32px;
+        }
+        .section-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .section {
+            margin: 0;
+        }
+        .section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .section p, .section ul {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .section ul li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="navbar">
+           Arena
+            <a href="index.html">HOME</a>
+            <a href="profile (1).html">PROFILE</a>
+            <a href="projects (1).html">PROJECTS</a>
+            <a href="videos.html">VIDEOS</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="profile-container">
+            <div class="profile-image"></div>
+            <div class="profile-name">JOHN LOUIE TIONGSON</div>
+            <div class="info-box">
+                <p>BACHELOR OF SCIENCE IN COMPUTER SCIENCE STUDENT</p>
+            </div>
+        </div>
+        <div class="profile-content">
+            <h1>My Profile</h1>
+            <div class="section-container">
+                <div class="section">
+                    <h2>About Me</h2>
+                    <p>Hi, I'm John Louie Tiongson, a passionate individual dedicated to creating innovative projects. I enjoy exploring new technologies and sharing my work with the world.</p>
+                </div>
+            </div>
+            <div class="section-container">
+                <div class="section">
+                    <h2>Skills</h2>
+                    <ul>
+                        <li>Web Development (HTML, CSS, JavaScript)</li>
+                        <li>Project Management</li>
+                        <li>Creative Design</li>
+                        <li>Video Editing</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section-container">
+                <div class="section">
+                    <h2>Contact</h2>
+                    <p>Email: johnlouie@example.com</p>
+                    <p>LinkedIn: linkedin.com/in/johnlouietiongson</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
